@@ -26,7 +26,7 @@ dependencies:
   # Utils
   intl: ^0.18.1
   uuid: ^4.2.1
-  google_fonts: ^6.1.0
+  google_fonts: ^6.2.1
   flutter_blue_plus: ^1.31.15  # For Bluetooth functionality
   permission_handler: ^11.3.0  # For handling permissions
   location: ^5.0.3  # For handling location services
