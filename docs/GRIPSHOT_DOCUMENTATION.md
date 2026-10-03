@@ -37,7 +37,7 @@ flowchart LR
 
 ## 3. Root project files
 
-### [README.md](README.md)
+### [README.md](../README.md)
 Purpose:
 - Default Flutter starter documentation.
 - It is not yet customized to this project and still contains the standard template text.
@@ -49,7 +49,7 @@ What it tells you:
 Suggested improvement:
 - Replace it with the real project summary, install instructions, hardware notes, and troubleshooting steps.
 
-### [pubspec.yaml](pubspec.yaml)
+### [pubspec.yaml](../pubspec.yaml)
 Purpose:
 - Declares app dependencies and Flutter project settings.
 
@@ -66,7 +66,7 @@ Important dependencies:
 Why this matters:
 - The project is designed around BLE hardware communication and local analytic persistence.
 
-### [hardware/gripshot_gun.ino](../hardware/gripshot_gun.ino)
+### [gripshot_gun.ino](../gripshot_gun.ino)
 Purpose:
 - This is the Arduino firmware for the physical gun hardware.
 
@@ -82,7 +82,7 @@ This file is the hardware side of the application and must match the BLE UUID va
 
 ## 4. Flutter app entry points
 
-### [lib/main.dart](lib/main.dart)
+### [lib/main.dart](../lib/main.dart)
 Purpose:
 - App bootstrap and permission gate.
 
@@ -100,7 +100,7 @@ Important behavior:
 Why it matters:
 - This is the first file run by the app and is responsible for all early setup.
 
-### [lib/pages/home_page.dart](lib/pages/home_page.dart)
+### [lib/pages/home_page.dart](../lib/pages/home_page.dart)
 Purpose:
 - Top-level navigation shell for the app.
 
@@ -120,7 +120,7 @@ This is the central hub of the app after permissions are granted.
 
 ## 5. Permission and security flow
 
-### [lib/widgets/initial_permission_handler.dart](lib/widgets/initial_permission_handler.dart)
+### [lib/widgets/initial_permission_handler.dart](../lib/widgets/initial_permission_handler.dart)
 Purpose:
 - Ensures all permissions are granted before the app continues.
 
@@ -135,7 +135,7 @@ Why this matters:
 - BLE scanning on Android requires location permission.
 - Without this step, the app cannot discover gun or target devices reliably.
 
-### [lib/utils/permission_handler.dart](lib/utils/permission_handler.dart)
+### [lib/utils/permission_handler.dart](../lib/utils/permission_handler.dart)
 Purpose:
 - Helper for storage/media permission handling.
 
@@ -150,7 +150,7 @@ This file supports the app’s permission gate for session persistence.
 
 ## 6. BLE training flow
 
-### [lib/pages/training_page.dart](lib/pages/training_page.dart)
+### [lib/pages/training_page.dart](../lib/pages/training_page.dart)
 Purpose:
 - Device discovery and connection flow for the training gun.
 
@@ -158,11 +158,16 @@ What it does:
 - Subscribes to FlutterBluePlus scanning results
 - Checks whether Bluetooth is enabled and available
 - Requests location permission if necessary
-- Searches for devices whose names match “Gripshot Gun”
+- `_buildDeviceList()` displays scan results only when the advertised name contains “Gripshot Gun” (case-insensitive).
 - Displays scan results and allows the user to connect
 
 Key constants:
 - `GRIPSHOT_SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e"`
+
+Current implementation note:
+- `_startScan()` starts an unfiltered BLE scan; it does not pass `GRIPSHOT_SERVICE_UUID` as a scan filter.
+- `_buildDeviceList()` filters by device name, so a compatible gun with a different advertised name will not appear in the selectable list.
+- The visible Connect button connects inline using `result.device.connect()` and then opens `ConnectedDevicePage`. `_connectToDevice()` is an alternate helper and is not the handler used by those list tiles.
 
 This file is the entry point for connecting to the hardware gun itself.
 
@@ -178,7 +183,7 @@ How to use it:
 
 ## 7. Live connection and data parsing
 
-### [lib/pages/connected_page.dart](lib/pages/connected_page.dart)
+### [lib/pages/connected_page.dart](../lib/pages/connected_page.dart)
 Purpose:
 - Handles an active BLE connection to a gun and shows live data history.
 
@@ -198,7 +203,7 @@ Important concept:
 
 ## 8. Core training logic
 
-### [lib/pages/connected_device_page.dart](lib/pages/connected_device_page.dart)
+### [lib/pages/connected_device_page.dart](../lib/pages/connected_device_page.dart)
 Purpose:
 - This is the most important file in the app.
 - It contains the dry-fire weapon training logic, sensor processing, scoring, save flow, and training session analytics.
@@ -251,7 +256,7 @@ This file is the main logic engine for the Gripshot dry-fire training system.
 
 ## 9. History and analytics
 
-### [lib/pages/history_page.dart](lib/pages/history_page.dart)
+### [lib/pages/history_page.dart](../lib/pages/history_page.dart)
 Purpose:
 - Displays saved sessions, loads session JSON, and provides detail drill-down screens.
 
@@ -269,7 +274,7 @@ This is the analytics layer for measuring improvement over time.
 
 ## 10. User profile and personalization
 
-### [lib/pages/profile_page.dart](lib/pages/profile_page.dart)
+### [lib/pages/profile_page.dart](../lib/pages/profile_page.dart)
 Purpose:
 - User profile management and progress analysis.
 
@@ -290,7 +295,7 @@ Data keys used include:
 
 This screen ties progress analytics to a user identity.
 
-### [lib/models/user_profile.dart](lib/models/user_profile.dart)
+### [lib/models/user_profile.dart](../lib/models/user_profile.dart)
 Purpose:
 - Simple immutable user model for profile state.
 
@@ -300,7 +305,7 @@ What it does:
 
 This is a lightweight model used to represent a user profile in code.
 
-### [lib/models/user.dart](lib/models/user.dart)
+### [lib/models/user.dart](../lib/models/user.dart)
 Purpose:
 - Model for a stored app user, including profile image path.
 
@@ -310,7 +315,7 @@ This is likely the app’s general user record model and is related to profile p
 
 ## 11. Local database layer
 
-### [lib/data/local/database/database_helper.dart](lib/data/local/database/database_helper.dart)
+### [lib/pages/database_helper.dart](../lib/pages/database_helper.dart)
 Purpose:
 - Local SQLite helper, storing session summary rows in a `training_sessions` table.
 
@@ -323,7 +328,7 @@ What it does:
 
 This is a simpler local database path for saved training data.
 
-### [lib/data/local/database/app_database.dart](lib/data/local/database/app_database.dart)
+### [lib/data/local/database/app_database.dart](../lib/data/local/database/app_database.dart)
 Purpose:
 - More general SQLite database wrapper used for app data modeling.
 
@@ -339,83 +344,110 @@ This file appears to be a broader app-data layer, but the actual product flow in
 
 ---
 
-## 12. Arduino / hardware integration guide
+## 12. BLE integration: app functions and code blocks
 
-This is the most important part for connecting the hardware to the app.
+The ESP32 runs the Arduino firmware and sends BLE notifications. Flutter does not open or execute the `.ino` file; the app connects to the running ESP32, subscribes to a GATT characteristic, and interprets the received bytes.
 
-### Hardware side
-The Arduino code file is [gripshot_gun.ino](gripshot_gun.ino).
+The checked-in [gripshot_gun.ino](../gripshot_gun.ino) currently contains only a partial button/output snippet. It shows a `button_pressed` notification call, but does not include the complete BLE initialization, UUID declarations, pin setup, or full `setup()` / `loop()` functions. Confirm UUIDs and hardware behavior against the complete sketch used to program the ESP32.
 
-It should be loaded onto the microcontroller used in the Gripshot gun. It is designed to control the dry-fire system and send BLE notifications to the phone.
+### App path, from scan to UI
 
-Typical hardware components likely used:
-- trigger button
-- solenoid
-- buzzer
-- laser output
-- ESP32 / Arduino-compatible BLE board
+| Stage | File and function/block | What it configures or does |
+|---|---|---|
+| Start scan | [lib/pages/training_page.dart](../lib/pages/training_page.dart), `_startScan()` | Checks Bluetooth/location readiness and calls `FlutterBluePlus.startScan()`. The current scan is unfiltered by service UUID. |
+| Listen for results | [lib/pages/training_page.dart](../lib/pages/training_page.dart), `_setupScanListeners()` and the scan-results listener in `_startScan()` | Receives `ScanResult` values and stores them in `_scanResults`. |
+| Decide which results are listed | [lib/pages/training_page.dart](../lib/pages/training_page.dart), `_buildDeviceList()` | Filters names with `contains('gripshot gun')`, case-insensitively. This is the current name-based compatibility gate. |
+| Connect the selected gun | [lib/pages/training_page.dart](../lib/pages/training_page.dart), Connect button callback inside `_buildDeviceList()` | Stops scanning, calls `result.device.connect(autoConnect: false)`, waits for the connected state, then navigates to `ConnectedDevicePage`. `_connectToDevice()` exists as an alternate helper but the list button currently uses its own inline connection code. |
+| Start BLE subscriptions | [lib/pages/connected_device_page.dart](../lib/pages/connected_device_page.dart), `initState()` and `_setupBLESubscription()` | `initState()` invokes `_setupBLESubscription()`. That method monitors connection state, discovers GATT services, locates UUIDs, enables notifications, and attaches listeners. |
+| Receive gun notifications | [lib/pages/connected_device_page.dart](../lib/pages/connected_device_page.dart), `_setupBLESubscription()` gun characteristic listener | Converts the notification bytes with `String.fromCharCodes(value)` and forwards the text to `_processSensorData()`. |
+| Receive target notifications | [lib/pages/connected_device_page.dart](../lib/pages/connected_device_page.dart), optional target block in `_setupBLESubscription()` | If a target is connected, discovers its separate service/characteristic, enables notifications, and forwards target text to the same data-processing path. |
+| Buffer and route packets | [lib/pages/connected_device_page.dart](../lib/pages/connected_device_page.dart), `_processSensorData(String)` | Drops repeated consecutive payloads, holds up to five strings, and processes the newest buffered string when the 50 ms update threshold is reached. This rate limiting can skip intermediate packets. |
+| Interpret packets | [lib/pages/connected_device_page.dart](../lib/pages/connected_device_page.dart), `_parseAndUpdateData(String)` | Branches on button strings, supported laser strings, or comma-separated sensor key/value fields. |
+| Update hit/session state | [lib/pages/connected_device_page.dart](../lib/pages/connected_device_page.dart), `_recordHit()` and `_startSensorDataCollection()` | Updates hit grid, score, bullet count, hit history, and periodic grip/pitch/touch histories. |
 
-### BLE pairing and UUID matching
-The Flutter app expects BLE services that match the device’s transmitted UUIDs.
+### UUIDs and where they are used
 
-From [lib/pages/training_page.dart](lib/pages/training_page.dart):
-- `GRIPSHOT_SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e"`
+The gun service and notification characteristic are defined in `connected_device_page.dart`:
 
-From [lib/pages/connected_device_page.dart](lib/pages/connected_device_page.dart):
-- `SENSOR_SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e"`
-- `SENSOR_CHARACTERISTIC_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"`
-- `TARGET_SERVICE_UUID = "12345678-1234-5678-1234-56789abcdef0"`
-- `TARGET_CHARACTERISTIC_UUID = "12345678-1234-5678-1234-56789abcdef1"`
+```text
+SENSOR_SERVICE_UUID:        6e400001-b5a3-f393-e0a9-e50e24dcca9e
+SENSOR_CHARACTERISTIC_UUID: 6e400003-b5a3-f393-e0a9-e50e24dcca9e
+```
 
-These are the critical integration points.
+`_setupBLESubscription()` searches the connected gun's discovered services for these exact UUIDs. A missing match throws `Sensor service not found` or `Sensor characteristic not found`; the app does not learn or update UUIDs dynamically.
 
-### What the hardware must send
-The app parses strings like:
-- `button_pressed`
-- `BUTTON PRESSED`
-- `LASER DETECTED at GPIO ...`
-- `LASER DETECTED MUX CH ...`
-- `LASER DETECTED ON MUX CH ...`
-- sensor values in `key:value` or comma-delimited format
+The target uses separate constants in the same file:
 
-If your hardware sends different strings, the parser in [lib/pages/connected_device_page.dart](lib/pages/connected_device_page.dart) must be updated to match.
+```text
+TARGET_SERVICE_UUID:        12345678-1234-5678-1234-56789abcdef0
+TARGET_CHARACTERISTIC_UUID: 12345678-1234-5678-1234-56789abcdef1
+```
 
-### Arduino integration steps
-1. Open [gripshot_gun.ino](gripshot_gun.ino) in Arduino IDE.
-2. Confirm the board type matches your hardware (typically ESP32 or Arduino BLE-capable board).
-3. Confirm the BLE service UUID matches the app code.
-4. Confirm the main notification characteristic matches:
-   - `6e400003-b5a3-f393-e0a9-e50e24dcca9e`
-5. In the firmware, send trigger and laser messages using the same text formats the app expects.
-6. Ensure the same values are used across both systems:
-   - service UUID
-   - characteristic UUID
-   - message labels
-   - sensor data format
-7. Build and upload the code to the device.
-8. Pair the phone with the BLE device.
-9. Open the Flutter app, scan for the gun, and connect.
+`training_page.dart` also declares `GRIPSHOT_SERVICE_UUID`, but the current `_startScan()` does not pass it to `startScan()`, and `_buildDeviceList()` currently filters only on the advertised name. Therefore, the declared constant is not currently what makes different names discoverable.
 
-### Important compatibility rule
-The app is hard-coded to recognize specific device names and BLE payload strings. If the Arduino code uses different names or messages, the app will not process the training data correctly.
+### Payload formats and processing behavior
 
-The main contract that must match is:
-- device name / BLE service discovery
-- notification UUID
-- message payload format
+The gun firmware snippet sends this trigger notification:
 
----
+```text
+button_pressed
+```
 
-## 13. How the app understands the hardware
+`_parseAndUpdateData()` also accepts `BUTTON PRESSED`. For a button packet, it tries to pair with a pending laser hit; if none qualifies, it immediately records a zero-score miss and decrements the bullet count while training.
 
-The app is not reading a random binary stream. It expects structured strings.
+The parser accepts these target laser message shapes:
 
-Examples from the app logic:
-- `button_pressed` -> indicates trigger event
-- `LASER DETECTED ...` -> indicates target registration / hit event
-- sensor values -> used to assess grip, pitch, and touch performance
+```text
+LASER DETECTED at GPIO <pin>
+LASER DETECTED MUX CH <channel> -> <value>
+LASER DETECTED ON MUX CH <channel>
+```
 
-The parsing logic exists mainly in [lib/pages/connected_device_page.dart](lib/pages/connected_device_page.dart), so that is the definitive place to update if your Arduino firmware changes.
+GPIOs are mapped through `photoPins`; MUX channels are mapped through `channelGridMap`. The resulting grid cell is scored using `_gridScores` and recorded by `_recordHit()` when it pairs with a recent button event.
+
+**Timing caveat:** `HIT_WINDOW_MS` is currently `0`. The laser parser branches only register when `_lastButtonPressTime` is within that window; otherwise they log and ignore the laser event. The button branch checks `_pendingLaserHit`, but the shown laser branches do not populate `_pendingLaserHit`. Validate event ordering/timing on the actual hardware before relying on hit scoring.
+
+Sensor metrics are parsed by splitting a notification on commas and each item on `:`. Current recognized keys are:
+
+```text
+grip:<number>,pitch:<number>,status:<text>,touch:<text>
+```
+
+For example:
+
+```text
+grip:2.5,pitch:1.2,status:SAFE,touch:TOUCHED
+```
+
+`grip` may include `kg`, which is stripped before numeric parsing. `pitch` is parsed as a number. `status` updates `_pitchStatus`; `touch` updates `_touchStatus`. Training samples these current values periodically in `_startSensorDataCollection()`.
+
+### Firmware-to-app integration checklist
+
+1. In the complete ESP32 sketch, create the gun service and notify characteristic using the gun UUIDs above.
+2. Advertise a name containing `Gripshot Gun`, because the current device list filters by that name.
+3. On trigger press, notify `button_pressed` (or change the app parser to match your firmware's chosen message).
+4. Send sensor packets using the comma-separated key/value format above.
+5. If a target is used, make its service/characteristic and laser message format match the target constants/parser.
+6. Upload the firmware to the ESP32 separately. The app receives BLE data from the running firmware; it never reads the source `.ino`.
+7. If UUIDs or payload formats change, update the constants or parser in `connected_device_page.dart` and test with notifications from the real device.
+
+## 13. How to trace an incoming hardware packet
+
+Use this path when debugging what the ESP32 sends:
+
+```text
+TrainingPage._startScan()
+  -> TrainingPage._buildDeviceList() Connect callback
+  -> BluetoothDevice.connect()
+  -> ConnectedDevicePage.initState()
+  -> _setupBLESubscription()
+  -> characteristic.onValueReceived
+  -> _processSensorData(data)
+  -> _parseAndUpdateData(data)
+  -> _recordHit() or sensor state updates
+```
+
+The gun button message is read from the gun characteristic. Optional target messages are read from the target characteristic, but both are sent into `_processSensorData()` and `_parseAndUpdateData()`. To change how a packet is interpreted, edit the relevant branch in `_parseAndUpdateData()`; to change UUID discovery or notification subscription, edit `_setupBLESubscription()`.
 
 ---
 
@@ -439,11 +471,11 @@ The parsing logic exists mainly in [lib/pages/connected_device_page.dart](lib/pa
 
 If you want to change the product logic, these are the most important files:
 
-- [lib/pages/connected_device_page.dart](lib/pages/connected_device_page.dart) — core scoring, hit detection, sensor reading, training session logic
-- [lib/pages/training_page.dart](lib/pages/training_page.dart) — BLE scan and device connection
-- [gripshot_gun.ino](gripshot_gun.ino) — physical hardware firmware
-- [lib/pages/history_page.dart](lib/pages/history_page.dart) — saved analytics UI
-- [lib/pages/profile_page.dart](lib/pages/profile_page.dart) — user and KPI logic
+- [lib/pages/connected_device_page.dart](../lib/pages/connected_device_page.dart) — core scoring, hit detection, sensor reading, training session logic
+- [lib/pages/training_page.dart](../lib/pages/training_page.dart) — BLE scan and device connection
+- [gripshot_gun.ino](../gripshot_gun.ino) — physical hardware firmware
+- [lib/pages/history_page.dart](../lib/pages/history_page.dart) — saved analytics UI
+- [lib/pages/profile_page.dart](../lib/pages/profile_page.dart) — user and KPI logic
 
 ---
 
@@ -466,8 +498,8 @@ If you want to change the product logic, these are the most important files:
 This repo is a Flutter-based companion app for a dry-fire shooting training gun. The app is designed to connect to BLE-enabled hardware, read trigger and sensor data, compute shot accuracy and grip metrics, and store user performance history.
 
 The key hardware integration point is the matching of BLE UUIDs and data messages between:
-- [gripshot_gun.ino](gripshot_gun.ino)
-- [lib/pages/training_page.dart](lib/pages/training_page.dart)
-- [lib/pages/connected_device_page.dart](lib/pages/connected_device_page.dart)
+- [gripshot_gun.ino](../gripshot_gun.ino)
+- [lib/pages/training_page.dart](../lib/pages/training_page.dart)
+- [lib/pages/connected_device_page.dart](../lib/pages/connected_device_page.dart)
 
 If all of those stay aligned, the app and hardware will work as one system.
